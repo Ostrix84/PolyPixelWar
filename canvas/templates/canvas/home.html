@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel War</title>
+    <!-- Exemple dans base.html -->
+    {% if user.is_authenticated %}
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %} 
+            <button type="submit">Se déconnecter</button>
+        </form>
+    {% else %}
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %} 
+            <button type="submit">Se connecter</button>
+        </form>
+    {% endif %}
+    <style>
+        #canvas {
+            display: grid;
+            grid-template-columns: repeat(100, 10px);
+            grid-template-rows: repeat(100, 10px);
+            gap: 1px;
+        }
+        .pixel {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pixel War</h1>
+    <div id="canvas"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('canvas');
+            
+            // Create a 100x100 grid of pixels
+            for (let y = 0; y < 100; y++) {
+                for (let x = 0; x < 100; x++) {
+                    const pixel = document.createElement('div');
+                    pixel.classList.add('pixel');
+                    pixel.dataset.x = x;
+                    pixel.dataset.y = y;
+                    canvas.appendChild(pixel);
+                }
+            }
+
+            // Fetch the initial pixel data from the server
+            fetch('/get_pixels/')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(pixel => {
+                        const pixelDiv = canvas.querySelector(`.pixel[data-x="${pixel.x}"][data-y="${pixel.y}"]`);
+                        if (pixelDiv) {
+                            pixelDiv.style.backgroundColor = pixel.color;
+                        }
+                    });
+                });
+
+            // Handle pixel placement
+            canvas.addEventListener('click', (event) => {
+                if (event.target.classList.contains('pixel')) {
+                    const x = event.target.dataset.x;
+                    const y = event.target.dataset.y;
+                    const color = prompt('Enter a color (hex code):');
+                    if (color) {
+                        fetch('/place_pixel/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({x, y, color})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                event.target.style.backgroundColor = color;
+                            } else {
+                                alert(data.error);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
