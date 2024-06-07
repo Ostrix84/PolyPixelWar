@@ -1,13 +1,14 @@
+# models.py
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
 
 class Pixel(models.Model):
-    x = models.PositiveIntegerField()
-    y = models.PositiveIntegerField()
-    color = models.CharField(max_length=7)  # Stocker les couleurs sous forme de codes hexadécimaux
+    x = models.IntegerField()
+    y = models.IntegerField()
+    color = models.CharField(max_length=7)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('x', 'y')
+    def __str__(self):
+        return f"Pixel ({self.x}, {self.y}) - {self.color}"
