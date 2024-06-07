@@ -10,15 +10,6 @@ body {
   height: 100vh;
 }
 
-h1 {
-  margin: 20px 0;
-  text-align: center;
-  position: fixed;
-  top: 20px; /* Ajustez la position verticale */
-  left: 50%; /* Centre horizontalement */
-  transform: translateX(-50%);
-  z-index: 1; /* Assurez-vous que le titre reste au-dessus des autres éléments */
-}
 
 #auth-buttons {
   position: fixed;
@@ -41,7 +32,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
   background-color: #fff;
   border-right: 1px solid #ddd;
   z-index: 1; /* Assurez-vous que le menu reste au-dessus de la grille */
@@ -59,27 +50,26 @@ h1 {
   border: 2px solid #000;
 }
 
-/* static/css/style.css */
-
 /* Augmentez la largeur de la grille de pixels */
 #grid {
   display: grid;
   position: fixed;
   top: 20px; /* Ajustez la position verticale */
-  left: 180px; /* Ajustez la position horizontale */
-  bottom: 20px; /* Assurez-vous que la grille reste au-dessus du bas de la page */
-  right: 20px; /* Assurez-vous que la grille reste à droite de la page */
-  overflow-y: auto;
-  grid-template-columns: repeat(90, 15px); /* Augmente le nombre de colonnes */
-  grid-template-rows: repeat(40, 15px); /* Réduit le nombre de lignes */
-  gap: 7px;
-  padding: 10px;
+  left: 170px; /* Ajustez la position horizontale */
+  bottom: 80; /* Assurez-vous que la grille reste au-dessus du bas de la page */
+  right: 50px; /* Assurez-vous que la grille reste à droite de la page */
+  overflow: auto;
+  grid-template-columns: repeat(85, 20px); /* Ajustez la taille initiale des colonnes */
+  grid-template-rows: repeat(44, 20px); /* Ajustez la taille initiale des lignes */
+  gap: 0px; /* Supprime l'espacement entre les pixels */
+  padding: 0px;
   background-color: #fff;
   border-collapse: separate;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Cache la barre de défilement */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
-
-
 
 button {
   padding: 10px 20px;
@@ -95,23 +85,18 @@ button {
   height: 20px;
   background-color: #ffffff;
   cursor: pointer;
-  border: 1px solid transparent; /* Ajoute une bordure transparente à tous les côtés */
+  margin: 0; /* Supprime les marges */
+  padding : 0px;
+  border: 1px solid transparent #000;
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la taille totale */
+
 }
 
 .pixel:hover {
   border: 1px solid #000;
 }
 
-
-/* static/css/style.css */
-
 /* Styles pour le timer */
-
-
-
-
-
-
 #timer {
   position: fixed;
   top: 120px; /* Ajustez la position verticale en fonction de votre mise en page */
