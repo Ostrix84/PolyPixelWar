@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Pixel War</h1>
     <div id="auth-buttons">
         {% if user.is_authenticated %}
             <form action="{% url 'logout' %}" method="post">
@@ -24,6 +23,7 @@
             </form>
         {% endif %}
     </div>
+    <div id="timer"></div>
     <div id="container">
         <div id="menu"></div>
         <div id="grid"></div>

@@ -22,27 +22,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mark the first color as selected
     menu.firstChild.classList.add('selected');
 
-    // Fetch existing pixels
-    fetch('/get_pixels/')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(pixel => {
-                const pixelDiv = document.querySelector(`[data-x='${pixel.x}'][data-y='${pixel.y}']`);
-                if (pixelDiv) {
-                    pixelDiv.style.backgroundColor = pixel.color;
-                }
-            });
-        });
+    // Fetch existing pixels and render
+    fetchAndRenderPixels();
 
-    // Create grid
-    for (let y = 0; y < 50; y++) {
-        for (let x = 0; x < 50; x++) {
-            const pixelDiv = document.createElement('div');
-            pixelDiv.className = 'pixel';
-            pixelDiv.dataset.x = x;
-            pixelDiv.dataset.y = y;
-            grid.appendChild(pixelDiv);
-        }
+    // Refresh pixels every 5 seconds
+    setInterval(fetchAndRenderPixels, 5000);
+
+    function fetchAndRenderPixels() {
+        fetch('/get_pixels/')
+            .then(response => response.json())
+            .then(data => {
+                // Clear existing pixels
+                grid.innerHTML = '';
+
+                // Render empty grid
+                for (let y = 0; y < 40; y++) {
+                    for (let x = 0; x < 90; x++) {
+                        const pixelDiv = document.createElement('div');
+                        pixelDiv.className = 'pixel';
+                        pixelDiv.dataset.x = x;
+                        pixelDiv.dataset.y = y;
+                        grid.appendChild(pixelDiv);
+                    }
+                }
+
+                // Render colored pixels
+                data.forEach(pixel => {
+                    const pixelDiv = document.querySelector(`[data-x='${pixel.x}'][data-y='${pixel.y}']`);
+                    if (pixelDiv) {
+                        pixelDiv.style.backgroundColor = pixel.color;
+                    }
+                });
+            });
     }
 
     // Add click event to pixels
@@ -70,6 +81,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+
+// Fonction pour afficher le timer de décompte
+function updateTimer(timeLeft) {
+    const timerElement = document.getElementById('timer');
+    if (timeLeft > 0) {
+        timerElement.textContent = timeLeft;
+    } else {
+        timerElement.textContent = 'Pixel !'; // Cache le timer quand le temps est écoulé
+    }
+}
+
+// Fonction pour obtenir le temps restant avant de pouvoir placer un autre pixel
+function fetchTimeLeft() {
+    fetch('/can_place_pixel/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.can_place_pixel === false) {
+                const nextAllowedPlacement = new Date(data.next_allowed_placement);
+                const currentTime = new Date();
+                const timeLeft = Math.ceil((nextAllowedPlacement - currentTime) / 1000); // Convertit en secondes
+                updateTimer(timeLeft);
+            } else {
+                updateTimer(0); // Aucun temps restant, masque le timer
+            }
+        });
+}
+
+// Actualiser le temps restant toutes les secondes
+setInterval(fetchTimeLeft, 1000);
+
 
 function getCookie(name) {
     let cookieValue = null;
